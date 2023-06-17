@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WorkDay extends Model
+class CompanyWorkDay extends Model
 {
     use HasFactory;
 
@@ -13,5 +13,5 @@ class WorkDay extends Model
      * The table associated with the model.
      * @var string
      */
-    protected string $table = 'work_days';
+    protected string $table = 'company_work_days';
 }

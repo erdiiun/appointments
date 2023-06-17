@@ -14,4 +14,9 @@ class Service extends Model
      * @var string
      */
     protected string $table = 'services';
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'company_services');
+    }
 }
