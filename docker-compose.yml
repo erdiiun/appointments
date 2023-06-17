@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  php8:
+    #image:php:8.1-fpm ile docker hub üzerinden image olarak ayağa kaldırabiliriz.
+    build:
+      context: ./docker/php8 #php8 dosya dockerFile yolu, dockerFile diyerek isim verebiliriz. image de kullanabiliriz
+    hostname: php8 #ngnix config için gerekli
+    ports:
+      - "9000:9000" #iç ve dış portlar
+    volumes:
+      - ./projects/:/var/www/html #phpnin çalışacağı proje yolu
+      - ./docker/php8/www.conf:/usr/local/etc/phfpm.d/www.conf #conf dosyamız
+      - ./docker/php8/php.ini:/usr/local/etc/php/php.ini #php ini dosyasını override etmek istersek
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./projects/:/var/www/html/
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php8
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    depends_on:
+      - php8
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
