@@ -18,8 +18,10 @@ return new class extends Migration
             $table->integer('duration');
             $table->timestamps();
 
-            $table->foreign('company_id')->references('id')->on('companies');
-            $table->foreign('service_id')->references('id')->on('services');
+            $table->foreign('company_id')->references('id')->on('companies')
+                ->onDelete('cascade');;
+            $table->foreign('service_id')->references('id')->on('services')
+                ->onDelete('cascade');;
         });
     }
 

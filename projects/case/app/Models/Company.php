@@ -14,4 +14,13 @@ class Company extends Model
      * @var string
      */
     protected string $table = 'companies';
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'company_services');
+    }
+
 }
