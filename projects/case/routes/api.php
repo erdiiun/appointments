@@ -32,6 +32,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         // Company
         Route::get('/companies', [\App\Http\Controllers\v1\CompanyController::class, 'list']);
         Route::post('/companies/services', [\App\Http\Controllers\v1\CompanyController::class, 'service']);
+        Route::post('/companies/work-day', [\App\Http\Controllers\v1\CompanyController::class, 'workDay']);
 
         // User
         Route::get('/users', [\App\Http\Controllers\v1\UserController::class, 'userInfo']);

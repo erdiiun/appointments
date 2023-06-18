@@ -49,7 +49,7 @@ class UserController extends Controller
             // Find auth user and update info
             $user = auth()->user();
             $user->name = $request->input('name');
-            $user->passwords = $request->input('password');
+            $user->password = $request->input('password');
 
             if ($user->save()) {
                 return response()->json([
