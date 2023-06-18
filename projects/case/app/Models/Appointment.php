@@ -14,4 +14,8 @@ class Appointment extends Model
      * @var string
      */
     protected string $table = 'appointments';
+
+    protected array $guarded = [];
+
+    protected array $dates = ['app_start_date', 'app_finish_date'];
 }

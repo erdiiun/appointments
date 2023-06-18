@@ -8,28 +8,36 @@ use Validator;
 class AuthController extends Controller
 {
     /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
-    }
-    /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request){
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
+        $validator = Validator::make($request->all(),
+            [
+                'email' => 'required|email',
+                'password' => 'required|string|min:6',
+            ],
+            [
+                'email.required' => 'Email is required',
+                'email.email' => 'Email field is not valid',
+                'password.required' => 'Password is required',
+                'password.min' => 'The length of the E-mail must be bigger than 6'
+            ]
+        );
+
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first()
+            ], 422);
         }
-        if (! $token = auth()->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+
+        if (!$token = auth()->attempt($validator->validated())) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized'
+            ], 401);
         }
         return $this->createNewToken($token);
     }
@@ -44,15 +52,20 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|confirmed|min:6',
         ]);
+
         if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first()
+            ], 400);
         }
+
         $user = User::create(array_merge(
             $validator->validated(),
             ['password' => bcrypt($request->password)]
         ));
         return response()->json([
-            'message' => 'User successfully registered',
+            'status' => 'success',
             'user' => $user
         ], 201);
     }
@@ -64,7 +77,10 @@ class AuthController extends Controller
      */
     public function logout() {
         auth()->logout();
-        return response()->json(['message' => 'User successfully signed out']);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User successfully signed out'
+        ]);
     }
     /**
      * Refresh a token.
@@ -74,6 +90,7 @@ class AuthController extends Controller
     public function refresh() {
         return $this->createNewToken(auth()->refresh());
     }
+
     /**
      * Get the authenticated User.
      *
@@ -82,6 +99,7 @@ class AuthController extends Controller
     public function userProfile() {
         return response()->json(auth()->user());
     }
+
     /**
      * Get the token array structure.
      *
