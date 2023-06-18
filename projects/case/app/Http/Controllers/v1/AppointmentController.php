@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Mockery\Exception;
 use Validator;
 
@@ -50,6 +51,7 @@ class AppointmentController extends Controller
 
 
         if ($validator->fails()) {
+            Log::channel('custom')->error('Appointments validation error');
             return response()->json([
                 'status' => 'error',
                 'message' => $validator->errors()->first()
@@ -69,6 +71,7 @@ class AppointmentController extends Controller
             $day_of_week = Carbon::parse($date_string)->format('N');
             $hour = Carbon::parse($date_string)->format('H:i');
         }catch (\InvalidArgumentException $e) {
+            Log::channel('custom')->error('Appointment date format is not valid');
             return response()->json([
                 'status' => 'error',
                 'message' => 'Date format is not valid'
@@ -84,6 +87,8 @@ class AppointmentController extends Controller
             ->count() > 0;
 
         if (!$check_company_work_hour) {
+            Log::channel('custom')
+                ->error('Appointment company is not operating on the date you specified');
             return response()->json([
                 'status' => 'error',
                 'message' => 'The company is not operating on the date you specified.'
@@ -97,9 +102,11 @@ class AppointmentController extends Controller
 
         // Check if the request service ids in the company service ids
         if (count(array_diff($request_service_ids, $service_ids)) > 0) {
+            Log::channel('custom')
+                ->error('Appointment services you specified are not in the company service list');
             return response()->json([
                 'status' => 'error',
-                'message' => 'The services you specified are not in the company service list.'
+                'message' => 'The services you specified are not in the company service list'
             ], 400);
         }
 
@@ -122,6 +129,8 @@ class AppointmentController extends Controller
                 ->count() > 0;
 
         if (!$check_company_work_hour) {
+            Log::channel('custom')
+                ->error('Appointment end time exceeds company closing time');
             return response()->json([
                 'status' => 'error',
                 'message' => 'Appointment end time exceeds company closing time'
@@ -141,6 +150,8 @@ class AppointmentController extends Controller
             ->count() > 0;
 
         if ($company_appointments) {
+            Log::channel('custom')
+                ->error('Appointment times overlap with another appointment');
             return response()->json([
                 'status' => 'error',
                 'message' => 'Appointment times overlap with another appointment'
@@ -177,6 +188,8 @@ class AppointmentController extends Controller
                 ]);
             }
         }catch (\Exception $e) {
+            Log::channel('custom')
+                ->error('An error occurred while creating an appointment');
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while creating an appointment'

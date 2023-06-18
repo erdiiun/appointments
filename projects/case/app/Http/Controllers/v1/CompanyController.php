@@ -5,13 +5,20 @@ namespace App\Http\Controllers\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\CompanyService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Validator;
 
 class CompanyController extends Controller
 {
-    public function list()
+    /**
+     * Get list of companies
+     *
+     * @return JsonResponse
+     */
+    public function list(): JsonResponse
     {
         $companies = Company::where('status', '=', 1)->get();
 
@@ -19,10 +26,21 @@ class CompanyController extends Controller
             return response()->json($companies);
         }
 
-        return response()->json(['error', 'There is no valid company'], 400);
+        Log::channel('custom')->error('There is no valid company');
+        return response()->json([
+            'status' => 'error',
+            'message', 'There is no valid company'
+        ], 400);
 
     }
 
+    /**
+     * Get list of companies services
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function service(Request $request)
     {
 
@@ -38,7 +56,11 @@ class CompanyController extends Controller
         );
 
         if ($validator->fails()) {
-            return response()->json($validator->errors()->first(), 400);
+            Log::channel('custom')->error($validator->errors()->first());
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first()
+            ], 400);
         }
 
         $company = DB::table('company_services')
@@ -50,9 +72,16 @@ class CompanyController extends Controller
             ->get();
 
         if (count($company) > 0) {
-            return response()->json($company);
+            return response()->json([
+                'status' => 'success',
+                'message' => $company
+            ]);
         }else{
-            return response()->json(['error' => 'Company does not have any service']);
+            Log::channel('custom')->error('Company does not have any service');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Company does not have any service'
+            ]);
         }
 
     }

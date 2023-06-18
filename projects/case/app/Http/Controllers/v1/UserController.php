@@ -32,8 +32,7 @@ class UserController extends Controller
      */
     public function userUpdate(Request $request): JsonResponse
     {
-        Log::warning('Bu bir warning logudur.');
-        exit;
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|between:2,100',
             'password' => 'required|string|confirmed|min:6',
@@ -50,7 +49,7 @@ class UserController extends Controller
             // Find auth user and update info
             $user = auth()->user();
             $user->name = $request->input('name');
-            $user->password = $request->input('password');
+            $user->passwords = $request->input('password');
 
             if ($user->save()) {
                 return response()->json([
@@ -64,6 +63,7 @@ class UserController extends Controller
                 ]);
             }
         }catch (\Exception $e) {
+            Log::channel('custom')->error('User update error');
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage()
