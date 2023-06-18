@@ -1,7 +1,4 @@
 # Randevu Assessments
-Gelen mailleri ilgili servisler aracılığıyla iletmek için geliştirilmiştir. Mailjet, SMTP ve default(Elastic) servisleri
-ile mailler gönderilir. Mailjet ve SMTP ile gönderim başarısız olursa, default servis ile tekrardan gönderilir ve response
-döner.
 
 ### Kurulum ve Gereksinimler
 Proje Docker kullanılarak geliştirilmiştir. Öncelikle bilgisayrınıza Docker kurulumu yapmanız gerekmektedir.
