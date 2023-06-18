@@ -22,17 +22,21 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::group(['prefix' => 'auth'],function (){
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/refresh', [AuthController::class, 'refresh']);
-        Route::get('/user-profile', [AuthController::class, 'userProfile']);
     });
 
     Route::group(['prefix' => 'v1'], function () {
 
         // Appointment
-        Route::post('/appointment', [\App\Http\Controllers\v1\AppointmentController::class, 'appointment']);
+        Route::post('/appointments', [\App\Http\Controllers\v1\AppointmentController::class, 'appointment']);
 
         // Company
         Route::get('/companies', [\App\Http\Controllers\v1\CompanyController::class, 'list']);
-        Route::post('/company/services', [\App\Http\Controllers\v1\CompanyController::class, 'service']);
+        Route::post('/companies/services', [\App\Http\Controllers\v1\CompanyController::class, 'service']);
+
+        // User
+        Route::get('/users', [\App\Http\Controllers\v1\UserController::class, 'userInfo']);
+        Route::post('/users', [\App\Http\Controllers\v1\UserController::class, 'userUpdate']);
+
     });
 
 
