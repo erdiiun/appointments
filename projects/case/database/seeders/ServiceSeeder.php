@@ -15,27 +15,27 @@ class ServiceSeeder extends Seeder
     {
         $services = [
             [
-                'service_name' => 'Brezilya Fönü',
+                'name' => 'Brezilya Fönü',
                 'duration' => '120'
             ],
             [
-                'service_name' => 'Manikür',
+                'name' => 'Manikür',
                 'duration' => '35'
             ],
             [
-                'service_name' => 'Pedikür',
+                'name' => 'Pedikür',
                 'duration' => '40'
             ],
             [
-                'service_name' => 'Saç Kesimi',
+                'name' => 'Saç Kesimi',
                 'duration' => '100'
             ],
             [
-                'service_name' => 'Sakal Kesimi',
+                'name' => 'Sakal Kesimi',
                 'duration' => '30'
             ],
             [
-                'service_name' => 'Gelin Başı',
+                'name' => 'Gelin Başı',
                 'duration' => '120'
             ],
         ];
