@@ -118,14 +118,13 @@ class AppointmentController extends Controller
         // Calculate the appointment end time
         $appointment_end_time = $appointment_start_time
             ->copy()
-            ->addMinutes($get_total_appointment_minutes)
-            ->format('H:i');
+            ->addMinutes($get_total_appointment_minutes);
 
         // Check if the appointment end time is within working hours
         $check_company_work_hour = DB::table('company_work_days')
                 ->where('company_id', $company_id)
                 ->where('day_of_week', $day_of_week)
-                ->where('end_time', '>=', $appointment_end_time)
+                ->where('end_time', '>=', $appointment_end_time->format('H:i'))
                 ->count() > 0;
 
         if (!$check_company_work_hour) {
@@ -140,12 +139,12 @@ class AppointmentController extends Controller
         // Check if there is another appointment at the desired appointment time
         $company_appointments = Appointment::where('company_id', $company_id)
             ->where(function ($query) use ($appointment_start_time, $appointment_end_time) {
-            $query->where('app_start_date', '<=', $appointment_end_time)
-                ->where('app_finish_date', '>=', $appointment_start_time);
+            $query->where('app_start_date', '<=', DB::raw("('$appointment_end_time')"))
+                ->where('app_finish_date', '>=', DB::raw("('$appointment_start_time')"));
             })
             ->orWhere(function ($query) use ($appointment_start_time, $appointment_end_time) {
-                $query->where('app_start_date', '<=', $appointment_start_time)
-                    ->where('app_finish_date', '>=', $appointment_end_time);
+                $query->where('app_start_date', '<=',DB::raw("('$appointment_start_time')"))
+                    ->where('app_finish_date', '>=', DB::raw("('$appointment_end_time')"));
             })
             ->count() > 0;
 
