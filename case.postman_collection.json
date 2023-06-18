@@ -275,7 +275,8 @@
 						"v1",
 						"appointments"
 					]
-				}
+				},
+				"description": "service_id alanı Company Services isteğinden dönen servis id leri yazılmalıdır. Birden fazla hizmet için ','\n\nile ayrılması gerekmektedir.\n\nTarih formatı 'Y-m-d H:i' şeklinde olması gerekmektedir."
 			},
 			"response": []
 		},
