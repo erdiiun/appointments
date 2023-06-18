@@ -110,6 +110,7 @@ class AuthController extends Controller
     protected function createNewToken(string $token): JsonResponse
     {
         return response()->json([
+            'status' => 'success',
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60,
