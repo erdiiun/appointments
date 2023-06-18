@@ -7,6 +7,7 @@ use App\Models\Appointment;
 use App\Models\CompanyService;
 use App\Models\Service;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
@@ -14,7 +15,14 @@ use Validator;
 
 class AppointmentController extends Controller
 {
-    public function appointment(Request $request)
+    /**
+     * Create an appointment
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function appointment(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(),
             [

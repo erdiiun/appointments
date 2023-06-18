@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -10,9 +11,11 @@ class AuthController extends Controller
     /**
      * Get a JWT via given credentials.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function login(Request $request){
+    public function login(Request $request): JsonResponse
+    {
         $validator = Validator::make($request->all(),
             [
                 'email' => 'required|email',
@@ -41,12 +44,16 @@ class AuthController extends Controller
         }
         return $this->createNewToken($token);
     }
+
     /**
      * Register a User.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
-    public function register(Request $request) {
+    public function register(Request $request): JsonResponse
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|between:2,100',
             'email' => 'required|string|email|max:100|unique:users',
@@ -73,9 +80,10 @@ class AuthController extends Controller
     /**
      * Log the user out (Invalidate the token).
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function logout() {
+    public function logout(): JsonResponse
+    {
         auth()->logout();
         return response()->json([
             'status' => 'success',
@@ -85,29 +93,22 @@ class AuthController extends Controller
     /**
      * Refresh a token.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function refresh() {
+    public function refresh(): JsonResponse
+    {
         return $this->createNewToken(auth()->refresh());
-    }
-
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function userProfile() {
-        return response()->json(auth()->user());
     }
 
     /**
      * Get the token array structure.
      *
-     * @param  string $token
+     * @param string $token
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    protected function createNewToken($token){
+    protected function createNewToken(string $token): JsonResponse
+    {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
